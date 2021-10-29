@@ -6,10 +6,10 @@ const tree = new Object();
 const createDirTree = (rootPath, maxDepth = 1, tree) => {
   console.log("*************************************************");
   // console.log("###");
-  // console.log("tree: ", tree);
   // console.log("###");
 
   //добавить проверку является ли путь папкой
+  console.log("tree: ", tree);
 
   maxDepth--;
 
