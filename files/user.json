@@ -1,0 +1,22 @@
+{
+    "name": "Hazel Nienow III",
+    "username": "Mozelle4",
+    "email": "Johnathan.Watsica@hotmail.com",
+    "address": {
+        "street": "Fahey Rapids",
+        "suite": "Suite 701",
+        "city": "South Bertramborough",
+        "zipcode": "00174",
+        "geo": {
+            "lat": "-78.0779",
+            "lng": "87.9917"
+        }
+    },
+    "phone": "(389) 678-1861",
+    "website": "elaina.biz",
+    "company": {
+        "name": "Ebert and Sons",
+        "catchPhrase": "Open-source encompassing internet solution",
+        "bs": "syndicate strategic solutions"
+    }
+}
