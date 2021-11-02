@@ -8,10 +8,20 @@
     <title>Users</title>
   </head>
   <body class="bg-secondary">
+
+    {{!-- Navbar --}}
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container">
+        <button type="button" class="btn btn-outline-secondary ms-auto" data-bs-toggle="modal" data-bs-target="#registerUserModal">Register</button>
+        <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#loginUserModal">Login</button>
+      </div>
+    </nav>
+
+    {{!-- Users list --}}
     <div class="container pt-3">
     <h1 class="text-white text-center p-5">Users:</h1>
     
-    <form class="row g-3 mb-3" method="POST"  action="create">
+    <form class="row g-3 mb-3" method="POST"  action="/create">
         <div class="col">
           <input class="form-control" type="text" placeholder="Name" name="name" id="name"  >
         </div>
@@ -27,7 +37,7 @@
       <tr>
         <th class="col">Name</th>
         <th class="col-2">Age</th>
-        <th class="col-2">Actions</th>
+        <th class="col-2">*Actions</th>
       </tr>  
 
       {{#each users}}
@@ -47,7 +57,7 @@
         </td>
       </tr>
 
-      <!-- Modal -->
+      <!-- Modal edit user-->
       <div class="modal fade" id="editUserModal-{{this.id}}" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -75,6 +85,59 @@
       {{/each}}
     </table>
     </div>
+
+    <!-- Modal register-->
+      <div class="modal fade" id="registerUserModal" tabindex="-1" aria-labelledby="registerUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="registerUserModalLabel">Register new user</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/register" method="POST">
+                {{!-- <input type="hidden" name="id" value="{{this.id}}" /> --}}
+                <label>Name</label><br>
+                <input name="name" class="form-control" /><br>
+                <label>Age</label><br>
+                <input name="age" type="number" min="1" max="110" class="form-control" /><br>
+                <label>Email</label><br>
+                <input name="email" type="email" class="form-control" /><br>
+                <label>Password</label><br>
+                <input name="password" type="password" class="form-control" /><br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+              </form>
+            </div>          
+          </div>
+        </div>
+      </div>
+
+          <!-- Modal login-->
+      <div class="modal fade" id="loginUserModal" tabindex="-1" aria-labelledby="loginUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="loginUserModalLabel">Login</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/login" method="POST">
+                <label>Email</label><br>
+                <input name="email" type="email" class="form-control" /><br>
+                <label>Password</label><br>
+                <input name="password" type="password" class="form-control" /><br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+              </form>
+            </div>          
+          </div>
+        </div>
+      </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   </body>
