@@ -12,6 +12,7 @@ import {
 import lineReader from "line-reader";
 import readline from "readline";
 import faker from "faker";
+import fetch from "node-fetch";
 const { helpers } = faker;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -137,10 +138,30 @@ const content = "Some content!";
 // });
 
 // read JSON object from file
-readFile("files/user.json", "utf-8", (err, data) => {
-  if (err) {
-    throw err;
-  }
-  const user = JSON.parse(data.toString());
-  console.log(user);
-});
+// readFile("files/user.json", "utf-8", (err, data) => {
+//   if (err) {
+//     throw err;
+//   }
+//   const user = JSON.parse(data.toString());
+//   console.log(user);
+// });
+
+//==
+//
+//Request remote open API, save response to the file
+//
+//==
+
+// const URL = "https://jsonplaceholder.typicode.com/todos";
+
+// fetch(URL)
+//   .then((response) => response.json())
+//   .then((json) => JSON.stringify(json, null, 4))
+//   .then((data) => {
+//     writeFile("files/todos.json", data, (err) => {
+//       if (err) {
+//         throw err;
+//       }
+//       console.log("Data from API is saved to file todos.json");
+//     });
+//   });
