@@ -158,9 +158,9 @@
             headers: headers
           });        
         const user  = await response.json();
-        console.log("token from login: ", user.token);
+        {{!-- console.log("token from login: ", user.token); --}}
         const userName = user.name
-        console.log("user login: ", userName);       
+        {{!-- console.log("user login: ", userName);        --}}
         
 
         const res = await fetch("/welcome", {

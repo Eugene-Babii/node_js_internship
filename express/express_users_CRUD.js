@@ -5,17 +5,27 @@ import knex from "knex";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { verifyToken } from "./middleware/auth.js";
+import { logger } from "../winston.js";
+import os from "os";
+import cluster from "cluster";
+import { createClient } from "redis";
 
+// const host = "127.0.0.1";
+// const port = 3001;
 const __dirname = resolve();
 const PORT = process.env.PORT ?? 3001;
 const app = express();
 const TOKEN_KEY = ";jhf987r4nh;2kjnl;xn;/*21";
+
+//db for sql
 const db = createConnection({
   host: "localhost",
   user: "root",
   password: "2homOBC5",
   database: "users_db",
 });
+
+//db for knex
 const knex_db = knex({
   client: "mysql",
   connection: {
@@ -26,16 +36,25 @@ const knex_db = knex({
   },
 });
 
+const redis = createClient();
+redis.on("error", (err) => console.log("Redis Client Error", err));
+
 app.set("view engine", "hbs");
 app.set("views", resolve(__dirname, "express", "views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.use((req, res, next) => {
+  if (cluster.isWorker)
+    console.log(`Worker ${cluster.worker.id} handle request`);
+  next();
+});
+
 // READ
 app.get("/", function (req, res) {
   db.query("SELECT * FROM users", function (err, data) {
     if (err) return console.log(err);
-    // console.log("db:", data);
+    logger.info("Server Sent List Of Users");
     res.render("index.hbs", {
       users: data,
     });
@@ -55,6 +74,7 @@ app.post("/create", function (req, res) {
       res.redirect("/");
     }
   );
+  redis.set(name, age);
 });
 
 // UPDATE
@@ -89,6 +109,9 @@ app.post("/register", async (req, res) => {
     const { name, age, email, password } = req.body;
 
     if (!(email && password && name && age)) {
+      logger.error(
+        `400 || ${res.statusMessage} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+      );
       return res.status(400).send(`
       All input is required</br>
       <a href="/">Main page</a>
@@ -97,13 +120,13 @@ app.post("/register", async (req, res) => {
 
     const oldUser = await knex_db("users").where("email", email);
     if (oldUser.length) {
+      logger.error(
+        `409 || ${res.statusMessage} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+      );
       return res.status(409).send(`
       User Already Exist. Please Login</br>
       <a href="/">Main page</a>      
       `);
-      document
-        .getElementById("#logInForm")
-        .addEventListener("submit", async function (event) {});
     }
 
     const encryptedPassword = await bcrypt.hash(password, 8);
@@ -121,7 +144,11 @@ app.post("/register", async (req, res) => {
 
     user.token = token;
 
-    res.status(201).json(user);
+    // res.status(201).json(user);
+    return res.status(201).send(`
+      Registered new user with id=${user}</br>
+      <a href="/">Main page</a>      
+      `);
   } catch (err) {
     console.log(err);
   }
@@ -129,13 +156,8 @@ app.post("/register", async (req, res) => {
 
 //LOGIN
 app.post("/login", async (req, res) => {
-  // console.log("req login");
   try {
-    // console.log("req.body", req.body);
-
     const { email, password } = req.body;
-    // console.log("email", email);
-    // console.log("password", password);
 
     if (!(email && password)) {
       return res.status(400).send(`
@@ -164,13 +186,24 @@ app.post("/login", async (req, res) => {
 app.post("/welcome", verifyToken, (req, res) => {
   try {
     const { userName } = req.body;
-    console.log("name /welcome:", userName);
-    res.status(200).send(`Welcome!`);
+    // console.log("name /welcome:", userName);
+    res.status(200).send(`Welcome! You have a token...`);
   } catch (err) {
     console.log(err);
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}...`);
-});
+if (cluster.isMaster) {
+  let cpus = os.cpus().length;
+
+  for (let i = 0; i < cpus; i++) cluster.fork();
+
+  cluster.on("exit", (worker, code) => {
+    console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
+
+    app.listen(PORT, () => console.log(`Worker ${cluster.worker.id} launched`));
+  });
+} else
+  app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}...`);
+  });
