@@ -9,6 +9,7 @@ import { logger } from "../winston.js";
 import os from "os";
 import cluster from "cluster";
 import { createClient } from "redis";
+import Queue from "bull";
 
 // const host = "127.0.0.1";
 // const port = 3001;
@@ -39,11 +40,17 @@ const knex_db = knex({
 const redis = createClient();
 redis.on("error", (err) => console.log("Redis Client Error", err));
 
+const usersQueue = new Queue("users");
+const settings = {
+  guardInterval: 60000, // Poll interval for delayed jobs and added jobs.
+};
+
+const updateQueue = new Queue("update", { settings });
+
 app.set("view engine", "hbs");
 app.set("views", resolve(__dirname, "express", "views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.use((req, res, next) => {
   if (cluster.isWorker)
     console.log(`Worker ${cluster.worker.id} handle request`);
@@ -75,23 +82,30 @@ app.post("/create", function (req, res) {
     }
   );
   redis.set(name, age);
+  usersQueue.add({ name, age });
 });
 
 // UPDATE
-app.post("/edit", function (req, res) {
+app.post("/edit", async function (req, res) {
   if (!req.body) return res.sendStatus(400);
-  const name = req.body.name;
-  const age = req.body.age;
-  const id = req.body.id;
+  const _job = JSON.parse(JSON.stringify(req.body));
 
-  db.query(
-    "UPDATE users SET name=?, age=? WHERE id=?",
-    [name, age, id],
-    function (err, data) {
-      if (err) return console.log(err);
-      res.redirect("/");
-    }
-  );
+  // const myJob = await updateQueue.add(_job, { delay: 5000 });
+  // console.log("myJob", myJob);
+
+  updateQueue.add(_job);
+  updateQueue.process((job) => {
+    const { name, age, id } = job.data;
+    db.query(
+      "UPDATE users SET name=?, age=? WHERE id=?",
+      [name, age, id],
+      function (err, data) {
+        if (err) return console.log(err);
+        res.redirect("/");
+      }
+    );
+    console.log("User updated");
+  });
 });
 
 // DELETE
@@ -186,7 +200,6 @@ app.post("/login", async (req, res) => {
 app.post("/welcome", verifyToken, (req, res) => {
   try {
     const { userName } = req.body;
-    // console.log("name /welcome:", userName);
     res.status(200).send(`Welcome! You have a token...`);
   } catch (err) {
     console.log(err);
@@ -195,15 +208,17 @@ app.post("/welcome", verifyToken, (req, res) => {
 
 if (cluster.isMaster) {
   let cpus = os.cpus().length;
-
   for (let i = 0; i < cpus; i++) cluster.fork();
-
   cluster.on("exit", (worker, code) => {
     console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
-
     app.listen(PORT, () => console.log(`Worker ${cluster.worker.id} launched`));
   });
-} else
+} else {
   app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}...`);
+    usersQueue.process(function (job) {
+      console.log("User", job.data.name, "added to redis in queue");
+      console.log("Job done by worker", cluster.worker.id, job.id);
+    });
   });
+}

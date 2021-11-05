@@ -1,0 +1,432 @@
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '2homOBC5';
+
+curl -4 icanhazip.com
+85.159.4.152
+
+убедиться, что порт 3000 не заблокирован брандмауэром. Чтобы открыть порт 3000, выполните следующую команду:
+sudo ufw allow 3000
+
+sudo nano /etc/php/7.4/fpm/pool.d/www.conf
+
+systemctl restart nginx php7.4-fpm
+
+
+
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+
+SQL
+
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+
+CREATE DATABASE shop_db;
+
+use shop_db; 
+
+CREATE TABLE IF NOT EXISTS offices(
+   office_id INT AUTO_INCREMENT PRIMARY KEY,
+   city VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS employees(
+   employee_id INT AUTO_INCREMENT PRIMARY KEY,
+   name VARCHAR(255),
+   email VARCHAR(50),
+   office_id INT,
+   FOREIGN KEY (office_id)
+        REFERENCES offices (office_id)
+);
+
+CREATE TABLE IF NOT EXISTS customers(
+   customer_id INT AUTO_INCREMENT PRIMARY KEY,
+   name VARCHAR(255),
+   phone VARCHAR(30),
+   adress VARCHAR(255),
+   employee_id INT,
+   FOREIGN KEY (employee_id)
+        REFERENCES employees (employee_id)
+);
+
+CREATE TABLE IF NOT EXISTS orders(
+   order_id INT AUTO_INCREMENT PRIMARY KEY,
+   product_name VARCHAR(50),
+   date DATE,
+   is_payed BOOLEAN DEFAULT FALSE,
+   customer_id INT,
+   FOREIGN KEY (customer_id)
+        REFERENCES customers (customer_id)
+);
+
+CREATE INDEX orders_id
+ON orders (order_id); 
+
+CREATE INDEX orders_date_and_customer_id
+ON orders (date, customer_id); 
+
+***************************************************************************** 
+
+insert into employees (employee_id, name, email, office_id) values (3, 'Lois Wybrew', 'lwybrew2@moonfruit.com', 4);
+
+UPDATE employees
+SET email = 'leisha_babbi@gmail.com'
+WHERE name = 'Leisha Babbidge';
+
+DELETE FROM employees WHERE employee_id=3;
+
+*****************************************************************************
+
+SELECT name, email FROM employees;
+
+SELECT name, phone, adress FROM customers;
+
+SELECT * FROM employees WHERE employee_id =
+ (SELECT employee_id FROM customers WHERE name = "Henri Claxson")
+
+SELECT orders.order_id, customers.name, orders.date
+FROM orders
+INNER JOIN customers ON orders.customer_id=customers.customer_id;
+
+SELECT orders.order_id, customers.name
+FROM orders
+INNER JOIN customers ON orders.customer_id=customers.customer_id; 
+
+SELECT customers.name, orders.order_id
+FROM customers
+LEFT JOIN orders ON customers.customer_id=orders.customer_id
+ORDER BY customers.name;
+
+SELECT orders.product_name, employees.name
+FROM ((customers
+INNER JOIN orders ON customers.customer_id = orders.customer_id)
+RIGHT JOIN employees ON customers.employee_id = employees.employee_id)
+ORDER BY employees.name; 
+
+SELECT COUNT(orders.order_id) AS NumberOfOrders, employees.name
+FROM ((customers
+INNER JOIN orders ON customers.customer_id = orders.customer_id)
+RIGHT JOIN employees ON customers.employee_id = employees.employee_id)
+GROUP BY name
+
+SELECT COUNT(orders.order_id) AS NumberOfOrders, employees.name
+FROM ((customers
+INNER JOIN orders ON customers.customer_id = orders.customer_id)
+RIGHT JOIN employees ON customers.employee_id = employees.employee_id)
+GROUP BY name
+HAVING COUNT(orders.order_id) > 0
+ORDER BY COUNT(orders.order_id) DESC;
+
+
+
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+
+TESTING INDEXES
+
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+
+
+************************************************************
+test 1 - without indexes
+create table if not exists indexesTest(
+     id int primary key auto_increment,
+     title varchar(255)not null,
+     completed tinyint(1) not null default 0   
+     )
+************************************************************
+
+SELECT * FROM `indexesTest` WHERE id=11
+Query took 0.0004 seconds
+
+SELECT * FROM `indexesTest` WHERE id=110040
+Query took 0.0004 seconds.
+
+SELECT * FROM `indexesTest` WHERE id=99955
+Query took 0.0005 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 30000 at table indexesTest'
+Query took 0.2428 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 555000 at table indexesTest'
+Query took 0.2412 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 999000 at table indexesTest'
+Query took 0.2431 seconds
+
+
+************************************************************
+test 2 - with index1 (id)
+CREATE INDEX index1 ON indexesTest (id);
+************************************************************
+
+SELECT * FROM `indexesTest` WHERE id=11
+Query took 0.0007 seconds
+
+SELECT * FROM `indexesTest` WHERE id=110040
+Query took 0.0006 seconds
+
+SELECT * FROM `indexesTest` WHERE id=99955
+Query took 0.0006 seconds
+
+************************************************************
+test 3 -with index1 (id) + index2 (id, title)
+CREATE INDEX index2 ON indexesTest (id, title);
+************************************************************
+
+SELECT * FROM `indexesTest` WHERE title='Row 30000 at table indexesTest'
+Query took 0.2429 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 555000 at table indexesTest'
+Query took 0.2423 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 999000 at table indexesTest'
+Query took 0.2416 seconds
+
+************************************************************
+test 4 -with index1 (id) + index2 (id, title) + index3 (title)
+CREATE INDEX index3 ON indexesTest (title);
+************************************************************
+
+SELECT * FROM `indexesTest` WHERE title='Row 30000 at table indexesTest'
+Query took 0.0006 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 555000 at table indexesTest'
+Query took 0.0006 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 999000 at table indexesTest'
+Query took 0.0006 seconds
+
+************************************************************
+test 5 - with index3 (title)
+************************************************************
+
+SELECT * FROM `indexesTest` WHERE title='Row 30000 at table indexesTest'
+Query took 0.0008 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 555000 at table indexesTest'
+Query took 0.0007 seconds
+
+SELECT * FROM `indexesTest` WHERE title='Row 999000 at table indexesTest'
+Query took 0.0007 seconds
+
+
+***************************************************************************
+test batch insert 1000 rows
+***************************************************************************
+
+Single inserting ends in 5964 milliseconds
+Batch inserting ends in 105 milliseconds
+
+
+***************************************************************************
+knex migrations
+***************************************************************************
+npm install knex -g
+knex init
+knex migrate:make --esm create_users_table
+knex migrate:make --esm create_tasks_table
+
+
+
+
+
+
+**************************************************************************
+**************************************************************************
+REDIS
+**************************************************************************
+**************************************************************************
+redis-cli
+
+#___STRING
+
+SET foo "hello world"
+GET foo -> "hello world"
+EXISTS foo -> (integer) 1
+APPEND foo " 222"-> "hello world 222" 
+
+DEL foo -> (integer) 1
+
+SET foo 1
+INCR foo -> (integer) 2
+DECR foo -> (integer) 1
+
+RENAME foo foo2
+GET foo ->(nil)
+GET foo2->"1"
+
+#___HASH
+
+HSET obj attr1 value1
+HSET obj attr2 value2
+HGET obj attr1
+HGETALL obj
+
+HDEL obj attr2
+
+
+#___LIST
+
+LPUSH list value1
+LPUSH list value2
+LPUSH list value3
+LRANGE list 0 -1    ->
+1) "value3"
+2) "value2"
+3) "value1"
+
+LPOP list ->
+"value3"
+
+** RPUSH, RPOP
+
+#___SET
+
+==unsorted
+SADD set1 obj1
+SADD set1 obj2
+SADD set1 obj3
+SMEMBERS set1
+
+SPOP set1
+SREM set1 obj1
+
+
+==sorted
+ZADD set2 1 obj1
+ZADD set2 2 obj2
+ZADD set3 3 obj3
+ZRANGE set2 0 -1
+
+######
+
+TTL
+
+SET mykey "Hello" EX 10
+TTL mykey
+
+
+######
+
+namespaces
+
+SET namespace1:key1 value
+SET namespace1:key2 value
+
+SET namespace2:key1 value
+SET namespace2:key2 value
+
+
+
+
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++
+autocannon
+
+without claster #1
+============
+
+Running 10s test @ http://localhost:3001
+10 connections
+┌─────────┬──────┬──────┬───────┬───────┬──────────┬─────────┬────────┐
+│ Stat    │ 2.5% │ 50%  │ 97.5% │ 99%   │ Avg      │ Stdev   │ Max    │
+├─────────┼──────┼──────┼───────┼───────┼──────────┼─────────┼────────┤
+│ Latency │ 8 ms │ 9 ms │ 16 ms │ 19 ms │ 10.13 ms │ 3.53 ms │ 109 ms │
+└─────────┴──────┴──────┴───────┴───────┴──────────┴─────────┴────────┘
+┌───────────┬─────────┬─────────┬─────────┬─────────┬─────────┬────────┬─────────┐
+│ Stat      │ 1%      │ 2.5%    │ 50%     │ 97.5%   │ Avg     │ Stdev  │ Min     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼────────┼─────────┤
+│ Req/Sec   │ 549     │ 549     │ 970     │ 1096    │ 938.7   │ 162.92 │ 549     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼────────┼─────────┤
+│ Bytes/Sec │ 9.79 MB │ 9.79 MB │ 17.3 MB │ 19.5 MB │ 16.7 MB │ 2.9 MB │ 9.78 MB │
+└───────────┴─────────┴─────────┴─────────┴─────────┴─────────┴────────┴─────────┘
+Req/Bytes counts sampled once per second.
+9k requests in 10.01s, 167 MB read
+
+
+without claster #2
+============
+
+Running 10s test @ http://localhost:3001
+10 connections
+┌─────────┬──────┬──────┬───────┬───────┬─────────┬─────────┬───────┐
+│ Stat    │ 2.5% │ 50%  │ 97.5% │ 99%   │ Avg     │ Stdev   │ Max   │
+├─────────┼──────┼──────┼───────┼───────┼─────────┼─────────┼───────┤
+│ Latency │ 8 ms │ 9 ms │ 15 ms │ 18 ms │ 9.83 ms │ 2.09 ms │ 45 ms │
+└─────────┴──────┴──────┴───────┴───────┴─────────┴─────────┴───────┘
+┌───────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+│ Stat      │ 1%      │ 2.5%    │ 50%     │ 97.5%   │ Avg     │ Stdev   │ Min     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ Req/Sec   │ 670     │ 670     │ 1004    │ 1093    │ 963.6   │ 128.74  │ 670     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ Bytes/Sec │ 11.9 MB │ 11.9 MB │ 17.9 MB │ 19.5 MB │ 17.2 MB │ 2.29 MB │ 11.9 MB │
+└───────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+Req/Bytes counts sampled once per second.
+10k requests in 10.01s, 172 MB read
+
+
+with claster #1
+============
+
+Running 10s test @ http://localhost:3001
+10 connections
+
+┌─────────┬──────┬──────┬───────┬───────┬─────────┬─────────┬────────┐
+│ Stat    │ 2.5% │ 50%  │ 97.5% │ 99%   │ Avg     │ Stdev   │ Max    │
+├─────────┼──────┼──────┼───────┼───────┼─────────┼─────────┼────────┤
+│ Latency │ 3 ms │ 8 ms │ 24 ms │ 31 ms │ 9.76 ms │ 6.56 ms │ 139 ms │
+└─────────┴──────┴──────┴───────┴───────┴─────────┴─────────┴────────┘
+┌───────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+│ Stat      │ 1%      │ 2.5%    │ 50%     │ 97.5%   │ Avg     │ Stdev   │ Min     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ Req/Sec   │ 631     │ 631     │ 993     │ 1146    │ 973     │ 131.09  │ 631     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ Bytes/Sec │ 11.2 MB │ 11.2 MB │ 17.6 MB │ 20.3 MB │ 17.2 MB │ 2.32 MB │ 11.2 MB │
+└───────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+
+Req/Bytes counts sampled once per second.
+
+11k requests in 11.01s, 190 MB read
+
+
+with claster #2
+============
+
+Running 10s test @ http://localhost:3001
+10 connections
+┌─────────┬──────┬──────┬───────┬───────┬─────────┬─────────┬───────┐
+│ Stat    │ 2.5% │ 50%  │ 97.5% │ 99%   │ Avg     │ Stdev   │ Max   │
+├─────────┼──────┼──────┼───────┼───────┼─────────┼─────────┼───────┤
+│ Latency │ 1 ms │ 7 ms │ 26 ms │ 32 ms │ 8.88 ms │ 6.68 ms │ 62 ms │
+└─────────┴──────┴──────┴───────┴───────┴─────────┴─────────┴───────┘
+┌───────────┬─────────┬─────────┬─────────┬─────────┬─────────┬────────┬─────────┐
+│ Stat      │ 1%      │ 2.5%    │ 50%     │ 97.5%   │ Avg     │ Stdev  │ Min     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼────────┼─────────┤
+│ Req/Sec   │ 762     │ 762     │ 1020    │ 1302    │ 1064.3  │ 186.59 │ 762     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼────────┼─────────┤
+│ Bytes/Sec │ 13.5 MB │ 13.5 MB │ 18.1 MB │ 23.1 MB │ 18.8 MB │ 3.3 MB │ 13.5 MB │
+└───────────┴─────────┴─────────┴─────────┴─────────┴─────────┴────────┴─────────┘
+Req/Bytes counts sampled once per second.
+11k requests in 10.02s, 188 MB read
+
+
+
+
+
+
+
+
+
+
+
