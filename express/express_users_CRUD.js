@@ -1,7 +1,5 @@
 import express from "express";
 import { resolve } from "path";
-import { createConnection } from "mysql";
-import knex from "knex";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { verifyToken } from "./middleware/auth.js";
@@ -10,41 +8,27 @@ import os from "os";
 import cluster from "cluster";
 import { createClient } from "redis";
 import Queue from "bull";
+import { connect_db, knex_database } from "../db/db_connection.js";
 
-// const host = "127.0.0.1";
-// const port = 3001;
 const __dirname = resolve();
-const PORT = process.env.PORT ?? 3001;
 const app = express();
-const TOKEN_KEY = ";jhf987r4nh;2kjnl;xn;/*21";
+const PORT = process.env.PORT ?? 3001;
+const TOKEN_KEY = process.env.TOKEN_KEY;
 
 //db for sql
-const db = createConnection({
-  host: "localhost",
-  user: "root",
-  password: "2homOBC5",
-  database: "users_db",
-});
+const db = connect_db("users_db");
 
 //db for knex
-const knex_db = knex({
-  client: "mysql",
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "2homOBC5",
-    database: "users_db",
-  },
-});
+const knex_db = knex_database("users_db");
 
 const redis = createClient();
 redis.on("error", (err) => console.log("Redis Client Error", err));
 
 const usersQueue = new Queue("users");
+
 const settings = {
   guardInterval: 60000, // Poll interval for delayed jobs and added jobs.
 };
-
 const updateQueue = new Queue("update", { settings });
 
 app.set("view engine", "hbs");
@@ -90,22 +74,31 @@ app.post("/edit", async function (req, res) {
   if (!req.body) return res.sendStatus(400);
   const _job = JSON.parse(JSON.stringify(req.body));
 
-  // const myJob = await updateQueue.add(_job, { delay: 5000 });
-  // console.log("myJob", myJob);
+  let progress = 5;
+  updateQueue.add(_job, { delay: progress * 1000 });
 
-  updateQueue.add(_job);
-  updateQueue.process((job) => {
+  updateQueue.process(async (job) => {
     const { name, age, id } = job.data;
+
     db.query(
       "UPDATE users SET name=?, age=? WHERE id=?",
       [name, age, id],
       function (err, data) {
         if (err) return console.log(err);
-        res.redirect("/");
+        // console.log(`User ${name} updated`);
+        logger.info(`User ${name} updated`);
+        return res.redirect("/");
       }
     );
-    console.log("User updated");
   });
+
+  // updateQueue.on("completed", (job) => {
+  //   console.log(`Job with id ${job.id} has been completed`);
+  // });
+
+  // updateQueue.on("progress", (job, progress) => {
+  //   console.log(`User will update after: ${progress} seconds`);
+  // });
 });
 
 // DELETE
@@ -206,6 +199,7 @@ app.post("/welcome", verifyToken, (req, res) => {
   }
 });
 
+//clusters manage
 if (cluster.isMaster) {
   let cpus = os.cpus().length;
   for (let i = 0; i < cpus; i++) cluster.fork();

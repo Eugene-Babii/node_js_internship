@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const TOKEN_KEY = ";jhf987r4nh;2kjnl;xn;/*21";
+const TOKEN_KEY = process.env.TOKEN_KEY;
 
 export const verifyToken = (req, res, next) => {
   const token =

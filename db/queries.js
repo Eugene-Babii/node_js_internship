@@ -1,13 +1,16 @@
-import { createConnection } from "mysql";
+import { connect_db } from "./db_connection.js";
+// import { createConnection } from "mysql";
 
-let connection = createConnection({
-  host: "localhost",
-  user: "root",
-  password: "2homOBC5",
-  database: "shop_db",
-});
+// let connection = createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "2homOBC5",
+//   database: "shop_db",
+// });
 
-connection.connect(function (err) {
+const connection_shop_db = connect_db("shop_db");
+
+connection_shop_db.connect(function (err) {
   if (err) {
     return console.error("error connection: " + err.message);
   }
@@ -63,10 +66,10 @@ connection.connect(function (err) {
   //     console.log(results);
   //   });
 
-  // let sql = `SELECT product_name FROM orders WHERE customer_id = ANY
-  //   (SELECT customer_id FROM customers WHERE employee_id = 2)`;
+  let sql = `SELECT product_name FROM orders WHERE customer_id = ANY
+    (SELECT customer_id FROM customers WHERE employee_id = 2)`;
 
-  connection.query(sql, function (err, results, fields) {
+  connection_shop_db.query(sql, function (err, results, fields) {
     if (err) {
       console.log(err.message);
     }
@@ -74,7 +77,7 @@ connection.connect(function (err) {
   });
 
   //end connection
-  connection.end(function (err) {
+  connection_shop_db.end(function (err) {
     if (err) {
       return console.log(err.message);
     }

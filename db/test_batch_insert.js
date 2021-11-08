@@ -2,20 +2,25 @@
  * @type {Knex}
  */
 
-import knex from "knex";
 import faker from "faker";
-const { name } = faker;
 import moment from "moment";
 
-const database = knex({
-  client: "mysql",
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "2homOBC5",
-    database: "knex_test",
-  },
-});
+// import knex from "knex";
+
+// const database = knex({
+//   client: "mysql",
+//   connection: {
+//     host: "127.0.0.1",
+//     user: "root",
+//     password: "2homOBC5",
+//     database: "knex_test",
+//   },
+// });
+
+import { knex_database } from "./db_connection.js";
+const database = knex_database("knex_test");
+
+const { name } = faker;
 
 try {
   // Create a table

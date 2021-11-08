@@ -2,17 +2,20 @@
  * @type {Knex}
  */
 
-import knex from "knex";
+// import knex from "knex";
 
-const database = knex({
-  client: "mysql",
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "2homOBC5",
-    database: "shop_db",
-  },
-});
+// const database = knex({
+//   client: "mysql",
+//   connection: {
+//     host: "127.0.0.1",
+//     user: "root",
+//     password: "2homOBC5",
+//     database: "shop_db",
+//   },
+// });
+
+import { knex_database } from "./db_connection.js";
+const database = knex_database("knex_test");
 
 try {
   //   SELECT * FROM employees WHERE employee_id =

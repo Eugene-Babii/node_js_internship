@@ -22,6 +22,7 @@ export const logger = createLogger({
       handleExceptions: true,
       json: false,
       colorize: true,
+      format: format.combine(format.colorize(), format.simple()),
     }),
 
     //SQL transport
