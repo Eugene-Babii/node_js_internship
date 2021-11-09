@@ -417,3 +417,66 @@ info: 08-Nov-2021 18:40:53: 	User doe updated
 info: 08-Nov-2021 18:40:53: 	Server Sent List Of Users
 info: 08-Nov-2021 18:42:46: 	Server Sent List Of Users
 info: 08-Nov-2021 18:42:58: 	Server Sent List Of Users
+info: 09-Nov-2021 11:59:37: 	Server Sent List Of Users
+info: 09-Nov-2021 12:37:02: 	Server Sent List Of Users
+info: 09-Nov-2021 12:41:48: 	Server Sent List Of Users
+info: 09-Nov-2021 12:45:17: 	User john updated
+info: 09-Nov-2021 12:46:58: 	User john updated
+info: 09-Nov-2021 12:46:58: 	Server Sent List Of Users
+info: 09-Nov-2021 12:47:24: 	User doe updated
+info: 09-Nov-2021 12:47:24: 	Server Sent List Of Users
+info: 09-Nov-2021 12:50:47: 	Server Sent List Of Users
+info: 09-Nov-2021 12:50:54: 	Server Sent List Of Users
+info: 09-Nov-2021 12:51:15: 	Server Sent List Of Users
+info: 09-Nov-2021 12:52:33: 	Server Sent List Of Users
+info: 09-Nov-2021 12:52:59: 	User kiol5555 updated
+info: 09-Nov-2021 12:52:59: 	Server Sent List Of Users
+info: 09-Nov-2021 12:53:21: 	Server Sent List Of Users
+info: 09-Nov-2021 12:55:22: 	Server Sent List Of Users
+info: 09-Nov-2021 13:12:56: 	Server Sent List Of Users
+error: 09-Nov-2021 13:18:00: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:18:49: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:20:59: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:28:47: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:30:12: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:30:41: 	400 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:31:46: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:36:43: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:38:33: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:40:42: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:45:27: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:45:57: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:46:30: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:46:46: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:47:03: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:50:38: 	500 || undefined - /api/auth/register - POST - ::1
+error: 09-Nov-2021 13:57:23: 	409 || undefined - /api/auth/register - POST - ::1
+info: 09-Nov-2021 14:35:31: 	Server Sent List Of Users
+info: 09-Nov-2021 15:10:44: 	Server Sent List Of Users
+info: 09-Nov-2021 15:11:50: 	Server Sent List Of Users
+info: 09-Nov-2021 15:15:19: 	Server Sent List Of Users
+info: 09-Nov-2021 15:17:13: 	Server Sent List Of Users
+info: 09-Nov-2021 15:20:51: 	Server Sent List Of Users
+info: 09-Nov-2021 15:22:57: 	Server Sent List Of Users
+info: 09-Nov-2021 15:26:23: 	Server Sent List Of Users
+info: 09-Nov-2021 15:26:26: 	Server Sent List Of Users
+info: 09-Nov-2021 15:31:29: 	Server Sent List Of Users
+info: 09-Nov-2021 16:26:50: 	Server Sent List Of Users
+info: 09-Nov-2021 16:43:30: 	Server Sent List Of Users
+info: 09-Nov-2021 16:44:27: 	Server Sent List Of Users
+info: 09-Nov-2021 16:53:01: 	Server Sent List Of Users
+info: 09-Nov-2021 16:55:04: 	Server Sent List Of Users
+info: 09-Nov-2021 16:58:40: 	Server Sent List Of Users
+info: 09-Nov-2021 17:07:35: 	Server Sent List Of Users
+info: 09-Nov-2021 17:10:48: 	Server Sent List Of Users
+info: 09-Nov-2021 17:17:54: 	Server Sent List Of Users
+info: 09-Nov-2021 17:31:48: 	Server Sent List Of Users
+info: 09-Nov-2021 17:36:28: 	Server Sent List Of Users
+info: 09-Nov-2021 17:39:01: 	Server Sent List Of Users
+info: 09-Nov-2021 17:39:45: 	Server Sent List Of Users
+info: 09-Nov-2021 17:42:09: 	Server Sent List Of Users
+info: 09-Nov-2021 17:47:19: 	Server Sent List Of Users
+info: 09-Nov-2021 17:48:20: 	Server Sent List Of Users
+info: 09-Nov-2021 17:48:40: 	Server Sent List Of Users
+info: 09-Nov-2021 17:49:41: 	Server Sent List Of Users
+info: 09-Nov-2021 18:12:09: 	Server Sent List Of Users

@@ -19,6 +19,6 @@ const zippedArrey = _.zip(
   ["*", "*", "*", "*"]
 );
 const unZippedArray = _.unzip(zippedArrey);
-console.log(zippedArrey);
-console.log(unZippedArray);
+console.log("zippedArrey: ", zippedArrey);
+console.log("unZippedArray: ", unZippedArray);
 console.log(_.now());

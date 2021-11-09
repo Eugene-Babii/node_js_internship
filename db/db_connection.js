@@ -19,7 +19,7 @@ export const connect_db = (db_name) => {
 };
 
 export const knex_database = (db_name) => {
-  knex({
+  return knex({
     client,
     connection: {
       host,

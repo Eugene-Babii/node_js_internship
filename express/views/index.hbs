@@ -17,12 +17,16 @@
       </div>
     </nav>
 
+
+    <div class="container pt-3" id="content">
+
+    {{#if tokenIsDecoded}}
+
     {{!-- Users list --}}
-    <div class="container pt-3">
-      <h2 class="text-white text-center p-2" id="logged"></h2>
-    <h1 class="text-white text-center p-5">Users:</h1>
+      <h2 class="text-white text-center p-2">Wellcome, {{name}}!!!</h2>
+      <h1 class="text-white text-center p-5">Users:</h1>
     
-    <form class="row g-3 mb-3" method="POST"  action="/create">
+    <form class="row g-3 mb-3" method="POST"  action="/api/users/create">
         <div class="col">
           <input class="form-control" type="text" placeholder="Name" name="name" id="name"  >
         </div>
@@ -48,7 +52,7 @@
         <td>
           
           <form
-            action="delete/{{this.id}}"
+            action="/api/users/delete/{{this.id}}"
             method="POST"
             class="d-flex justify-content-end"
           >
@@ -67,7 +71,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form action="/edit" method="POST">
+              <form action="/api/users/edit" method="POST">
                 <input type="hidden" name="id" value="{{this.id}}" />
                 <label>Name</label><br>
                 <input name="name" value="{{this.name}}"  class="form-control" /><br>
@@ -77,7 +81,7 @@
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <h5 class="modal-title" id="editUserModalLabel">{{timeout}}</h5>
+                {{!-- <h5 class="modal-title" id="editUserModalLabel">{{timeout}}</h5> --}}
               </form>
             </div>          
           </div>
@@ -86,7 +90,15 @@
 
       {{/each}}
     </table>
+
+          
+      {{else}}
+      <h2 class="text-white text-center p-2">Please login</h2>
+    {{/if}}
     </div>
+
+
+
 
     <!-- Modal register-->
       <div class="modal fade" id="registerUserModal" tabindex="-1" aria-labelledby="registerUserModalLabel" aria-hidden="true">
@@ -97,7 +109,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form action="/register" method="POST">
+              <form action="/api/auth/register" method="POST">
                 {{!-- <input type="hidden" name="id" value="{{this.id}}" /> --}}
                 <label>Name</label><br>
                 <input name="name" class="form-control" /><br>
@@ -153,26 +165,27 @@
         const email = logInForm.elements['email'].value;
         const password = logInForm.elements['password'].value;
 
-        const response = await fetch("/login", {
+        const response = await fetch("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({email, password}),
             headers: headers
           });        
         const user  = await response.json();
-        {{!-- console.log("token from login: ", user.token); --}}
+        console.log("token from login: ", user.token);
         const userName = user.name
-        {{!-- console.log("user login: ", userName);        --}}
+        console.log("user login: ", userName);       
         
 
-        const res = await fetch("/welcome", {
+        const res = await fetch("/api/users", {
             method: "POST",
-            body: JSON.stringify(userName),
+            body: JSON.stringify({userName}),
             headers: {
-              "x-access-token": user.token
+              "x-access-token": user.token,
+              "Content-Type":"application/json"
             }
           });  
         
-        document.getElementById("logged").innerText = await res.text();
+        document.getElementById("content").innerHTML = await res.text();
         logInForm.reset();
       });
 
