@@ -70,8 +70,8 @@ export const editUser = async (req, res) => {
     if (!req.body) return res.sendStatus(400);
     const _job = JSON.parse(JSON.stringify(req.body));
 
-    let progress = 5;
-    updateQueue.add(_job, { delay: progress * 1000 });
+    let seconds = 5;
+    updateQueue.add(_job, { delay: seconds * 1000 });
 
     updateQueue.process(async (job) => {
       const { name, age, id } = job.data;
