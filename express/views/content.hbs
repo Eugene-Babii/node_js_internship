@@ -1,0 +1,78 @@
+<div class="container pt-3" id="content">
+
+    {{#if tokenIsDecoded}}
+
+    {{!-- Users list --}}
+      <h2 class="text-white text-center p-2">Wellcome, {{name}}!!!</h2>
+      <h1 class="text-white text-center p-5">Users:</h1>
+    
+    <form class="row g-3 mb-3" method="POST"  action="/api/users/create">
+        <div class="col">
+          <input class="form-control" type="text" placeholder="Name" name="name" id="name"  >
+        </div>
+        <div class="col-2  px-0">
+          <input class="form-control" type="number" placeholder="Age" name="age" id="age"  >
+        </div>
+        <div class="col-2 d-grid gap-2 ">
+          <button type="submit" class="btn btn-primary">Add user</button>
+        </div>
+    </form>
+      
+    <table class="table table-striped table-hover">
+      <tr>
+        <th class="col">Name</th>
+        <th class="col-2">Age</th>
+        <th class="col-2 text-center">*Actions</th>
+      </tr>  
+
+      {{#each users}}
+      <tr>
+        <td >{{this.name}}</td>
+        <td >{{this.age}}</td>
+        <td>
+          
+          <form
+            action="/api/users/delete/{{this.id}}"
+            method="POST"
+            class="d-flex justify-content-end"
+          >
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal-{{this.id}}">Edit</button>
+            <button type="submit" class="btn btn-danger ms-2">Delete</button>
+          </form>
+        </td>
+      </tr>
+
+      <!-- Modal edit user-->
+      <div class="modal fade" id="editUserModal-{{this.id}}" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editUserModalLabel">Edit user</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/api/users/edit" method="POST">
+                <input type="hidden" name="id" value="{{this.id}}" />
+                <label>Name</label><br>
+                <input name="name" value="{{this.name}}"  class="form-control" /><br>
+                <label>Age</label><br>
+                <input name="age" type="number" min="1" max="110" value="{{this.age}}"  class="form-control" /><br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+                {{!-- <h5 class="modal-title" id="editUserModalLabel">{{timeout}}</h5> --}}
+              </form>
+            </div>          
+          </div>
+        </div>
+      </div>
+
+      {{/each}}
+    </table>
+
+          
+      {{else}}
+      <h2 class="text-white text-center p-2">Please login</h2>
+    {{/if}}
+    </div>

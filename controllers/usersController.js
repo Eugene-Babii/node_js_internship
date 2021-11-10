@@ -17,7 +17,7 @@ const updateQueue = new Queue("update", { settings });
 //need to login
 export const needLogin = async (req, res) => {
   try {
-    res.render("index.hbs", {
+    res.render("content.hbs", {
       tokenIsDecoded: false,
     });
   } catch (e) {
@@ -32,7 +32,7 @@ export const getAllUsers = async (req, res) => {
       if (err) return console.log(err);
       logger.info("Server Sent List Of Users");
       console.log("from READ: ", req.tokenIsDecoded);
-      res.render("index.hbs", {
+      res.render("content.hbs", {
         users: data,
         tokenIsDecoded: req.tokenIsDecoded,
         name: req.body.userName,

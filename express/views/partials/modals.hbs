@@ -1,0 +1,52 @@
+ <!-- Modal register-->
+      <div class="modal fade" id="registerUserModal" tabindex="-1" aria-labelledby="registerUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="registerUserModalLabel">Register new user</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/api/auth/register" method="POST">
+                {{!-- <input type="hidden" name="id" value="{{this.id}}" /> --}}
+                <label>Name</label><br>
+                <input name="name" class="form-control" /><br>
+                <label>Age</label><br>
+                <input name="age" type="number" min="1" max="110" class="form-control" /><br>
+                <label>Email</label><br>
+                <input name="email" type="email" class="form-control" /><br>
+                <label>Password</label><br>
+                <input name="password" type="password" class="form-control" /><br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+              </form>
+            </div>          
+          </div>
+        </div>
+      </div>
+
+          <!-- Modal login-->
+      <div class="modal fade" id="loginUserModal" tabindex="-1" aria-labelledby="loginUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="loginUserModalLabel">Login</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="logInForm" method="post">
+                <label>Email</label><br>
+                <input name="email" type="email" class="form-control" /><br>
+                <label>Password</label><br>
+                <input name="password" type="password" class="form-control" /><br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Login</button>
+                </div>
+              </form>
+            </div>          
+          </div>
+        </div>
+      </div>

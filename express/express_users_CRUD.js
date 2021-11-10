@@ -5,6 +5,7 @@ import cluster from "cluster";
 import { createClient } from "redis";
 import Queue from "bull";
 import hbs from "hbs";
+import expressHbs from "express-handlebars";
 
 import usersRoutes from "../routes/usersRouter.js";
 import authRoutes from "../routes/authRouter.js";
@@ -18,6 +19,14 @@ redis.on("error", (err) => console.log("Redis Client Error", err));
 
 const usersQueue = new Queue("users");
 
+app.engine(
+  "hbs",
+  expressHbs({
+    layoutsDir: "express/views/layouts",
+    defaultLayout: "layout",
+    extname: "hbs",
+  })
+);
 app.set("view engine", "hbs");
 app.set("views", resolve(__dirname, "express", "views"));
 hbs.registerPartials(__dirname + "/views/partials");
