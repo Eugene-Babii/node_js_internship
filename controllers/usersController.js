@@ -17,6 +17,10 @@ const updateQueue = new Queue("update", { settings });
 //need to login
 export const needLogin = async (req, res) => {
   try {
+    // console.log(
+    //   "session from needLogin: ",
+    //   req.session.key[req.sessionID].showAd
+    // );
     res.render("content.hbs", {
       tokenIsDecoded: false,
     });
@@ -30,6 +34,10 @@ export const getAllUsers = async (req, res) => {
   try {
     db.query("SELECT * FROM users", function (err, data) {
       if (err) return console.log(err);
+      console.log(
+        "session from getAll: ",
+        req.session.key[req.sessionID].showAd
+      );
       logger.info("Server Sent List Of Users");
       console.log("from READ: ", req.tokenIsDecoded);
       res.render("content.hbs", {
