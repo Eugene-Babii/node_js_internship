@@ -34,7 +34,9 @@ export const getAllUsers = async (req, res) => {
       console.log("from READ: ", req.tokenIsDecoded);
       res.render("content.hbs", {
         users: data,
-        tokenIsDecoded: req.tokenIsDecoded,
+        tokenIsDecoded: (req.tokenIsDecoded = undefined
+          ? false
+          : req.tokenIsDecoded),
         name: req.body.userName,
       });
     });

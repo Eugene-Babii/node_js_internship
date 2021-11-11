@@ -4,6 +4,12 @@
 
     {{!-- Users list --}}
       <h2 class="text-white text-center p-2">Wellcome, {{name}}!!!</h2>
+
+      {{else}}
+      <h2 class="text-white text-center p-2">Please login</h2>
+    {{/if}}
+
+
       <h1 class="text-white text-center p-5">Users:</h1>
     
     <form class="row g-3 mb-3" method="POST"  action="/api/users/create">
@@ -72,7 +78,5 @@
     </table>
 
           
-      {{else}}
-      <h2 class="text-white text-center p-2">Please login</h2>
-    {{/if}}
+
     </div>
