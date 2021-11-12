@@ -157,6 +157,7 @@ export const deleteUser = async (req, res) => {
     //
     //version with model
     //
+
     await User.query().findById(id).delete();
     res.redirect("/api/users");
   } catch (e) {

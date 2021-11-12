@@ -84,6 +84,10 @@ export const loginUser = async (req, res) => {
 
       user[0].token = token;
 
+      if (!req.session.key) req.session.key = req.sessionID;
+
+      req.session.key[req.sessionID].showAd = req.body.showAd;
+
       // res.status(200).json(token);
       res.status(200).json(user[0]);
     } else res.status(400).send("Invalid Credentials");

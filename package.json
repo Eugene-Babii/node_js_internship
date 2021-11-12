@@ -15,9 +15,12 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bull": "^4.1.0",
+    "connect-redis": "^6.0.0",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.4",
+    "express-session": "^1.17.2",
     "faker": "^5.5.3",
     "hbs": "^4.1.2",
     "jsonwebtoken": "^8.5.1",
@@ -36,7 +39,10 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/bull": "^3.15.5",
+    "@types/connect-redis": "^0.0.17",
     "@types/express": "^4.17.13",
+    "@types/express-handlebars": "^5.3.1",
+    "@types/express-session": "^1.17.4",
     "@types/hbs": "^4.0.1",
     "@types/jsonwebtoken": "^8.5.5",
     "@types/redis": "^2.8.32",

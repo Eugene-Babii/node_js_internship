@@ -8,6 +8,8 @@ import { createClient } from "redis";
 import Queue from "bull";
 import hbs from "hbs";
 import expressHbs from "express-handlebars";
+import session from "express-session";
+import redisStorage from "connect-redis";
 
 import usersRoutes from "../routes/usersRouter.js";
 import authRoutes from "../routes/authRouter.js";
@@ -16,6 +18,7 @@ const app = express();
 const PORT = process.env.PORT ?? 3001;
 const __dirname = resolve();
 
+const storage = redisStorage(session);
 const redis = createClient();
 redis.on("error", (err) => console.log("Redis Client Error", err));
 
@@ -35,6 +38,18 @@ hbs.registerPartials(__dirname + "/views/partials");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+app.use(
+  session({
+    store: new storage({
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      client: redis,
+    }),
+    secret: "you secret key",
+    saveUninitialized: true,
+  })
+);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
