@@ -1,3 +1,5 @@
+"use strict";
+
 export function up(knex, Promise) {
   return knex.schema.table("users", function (table) {
     table.integer("age");

@@ -1,3 +1,5 @@
+"use strict";
+
 export function up(knex) {
   return knex.schema.table("users", function (table) {
     table.string("fullname");

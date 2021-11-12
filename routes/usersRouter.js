@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  // needLogin,
   getAllUsers,
   createUser,
   editUser,
@@ -10,7 +9,7 @@ import { verifyToken } from "../express/middleware/auth.js";
 
 const router = Router();
 
-//need to login
+//need login
 router.get("/", getAllUsers);
 
 // READ

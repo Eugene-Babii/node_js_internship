@@ -1,3 +1,5 @@
+"use strict";
+
 import express from "express";
 import { resolve } from "path";
 import os from "os";
@@ -46,30 +48,6 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.redirect("/api/users");
 });
-
-// app.get("/", (req, res) => {
-//   res.render("index.hbs", {
-//     tokenIsDecoded: false,
-//   });
-// });
-
-// app.post("/", verifyToken, (req, res) => {
-//   try {
-// console.log("after verifyToken req.name: ", req.body.userName);
-// console.log("after verifyToken res: ", res);
-
-// const { userName } = req.body;
-// res.status(200).send(`Welcome! You have a token...`);
-// console.log("from app.post req.tokenIsDecoded= ", req.tokenIsDecoded);
-// res.render("index.hbs", {
-//   tokenIsDecoded: req.tokenIsDecoded,
-//   name: req.body.userName,
-// });
-// res.redirect("/api/users");
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
 
 //clusters manage
 if (cluster.isMaster) {
