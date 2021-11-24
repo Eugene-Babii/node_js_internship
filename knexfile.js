@@ -15,6 +15,7 @@ export const development = {
     directory: __dirname + "/db/seeds",
   },
 };
+
 export const staging = {
   client: "postgresql",
   connection: {
@@ -30,6 +31,7 @@ export const staging = {
     tableName: "knex_migrations",
   },
 };
+
 export const production = {
   client: "postgresql",
   connection: {
